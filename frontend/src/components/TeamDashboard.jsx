@@ -1,45 +1,31 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Users, Mail, Phone, Github, Linkedin, Award } from 'lucide-react';
 
 const TeamDashboard = () => {
-  const teamMembers = [
-    {
-      id: 1,
-      name: "Binggie Rashel Prasetyo",
-      role: "Lead Developer",
-      avatar: "",
-      email: "binggierashel@gmail.com",
-      phone: "+62 895-4156-54438",
-      skills: ["React", "Node.js", "PostgreSQL"],
-      projects: 3,
-      github: "fuumasite",
-      linkedin: "binggie-rashel-prasetyo"
-    },
-    {
-      id: 2,
-      name: "Nurkholifah",
-      role: "System Administrator",
-      avatar: "",
-      email: "lifahhh4@gmail.com",
-      phone: "+62 896-3749-3660",
-      skills: ["GNS3", "VirtualBox", "Mikrotik"],
-      projects: 3,
-      github: "",
-      linkedin: ""
-    },
-    {
-      id: 3,
-      name: "Yosep Geovanie",
-      role: "Web Engineer",
-      avatar: "",
-      email: "yosephprojects@gmail.com",
-      phone: "+62 812-81076845",
-      skills: ["React", "Node.js", "PostgreSQL"],
-      projects: 3,
-      github: "Joo-Geovanie",
-      linkedin: "yosep-geovanie-aritonang"
-    }
-  ];
+  const [teamMembers, setTeamMembers] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  // 🔹 Ambil data dari backend
+  useEffect(() => {
+    fetch("http://localhost:5000/api/members")
+      .then((res) => res.json())
+      .then((data) => {
+        setTeamMembers(data);
+        setLoading(false);
+      })
+      .catch((err) => {
+        console.error("❌ Gagal ambil data:", err);
+        setLoading(false);
+      });
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gray-900 text-white text-xl">
+        Loading data dari server...
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-red-900">
@@ -68,13 +54,13 @@ const TeamDashboard = () => {
           <div className="bg-gradient-to-br from-purple-800 to-purple-900 rounded-xl p-6 border border-purple-600 shadow-lg">
             <div className="flex items-center justify-between">
               <div>
-                <p className="text-purple-200 text-sm">Total Projects</p>
-                <p className="text-4xl font-bold text-white mt-2">
-                  {teamMembers.reduce((acc, member) => acc + member.projects, 0)}
-                </p>
+                  <p className="text-purple-200 text-sm">Total Projects</p>
+                  <p className="text-4xl font-bold text-white mt-2">
+                    {teamMembers.reduce((acc, member) => acc + (parseInt(member.project_count) || 0), 0)}
+                  </p>
+                </div>
+                <Award className="w-12 h-12 text-purple-400 opacity-50" />
               </div>
-              <Award className="w-12 h-12 text-purple-400 opacity-50" />
-            </div>
           </div>
 
           <div className="bg-gradient-to-br from-red-800 to-red-900 rounded-xl p-6 border border-red-600 shadow-lg">
@@ -145,7 +131,7 @@ const TeamDashboard = () => {
                         key={index}
                         className="bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xs px-3 py-1 rounded-full font-medium"
                       >
-                        {skill}
+                        {skill.skill_name}
                       </span>
                     ))}
                   </div>
@@ -155,7 +141,7 @@ const TeamDashboard = () => {
                 <div className="bg-gray-800 rounded-lg p-3 mb-4 border border-gray-700">
                   <div className="flex items-center justify-between">
                     <span className="text-gray-400 text-sm">Projects Completed</span>
-                    <span className="text-purple-400 font-bold text-lg">{member.projects}</span>
+                    <span className="text-purple-400 font-bold text-lg">{member.project_count}</span>
                   </div>
                 </div>
 
