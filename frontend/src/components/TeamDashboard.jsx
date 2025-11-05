@@ -12,7 +12,7 @@ const TeamDashboard = () => {
       phone: "+62 895-4156-54438",
       skills: ["React", "Node.js", "PostgreSQL"],
       projects: 3,
-      github: "sarahanderson",
+      github: "fuumasite",
       linkedin: "binggie-rashel-prasetyo"
     },
     {
